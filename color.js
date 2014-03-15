@@ -1,5 +1,4 @@
-var Color = (function () {
-
+(function(exports) {
 	var _additive = function (colors, operation) {
 		var sum = colors.shift();
 		for (var i in colors) {
@@ -129,7 +128,7 @@ var Color = (function () {
 		return percent;
 	}
 
-	return {
+	exports.Color = {
 
 		add: function() {
 			return _formatColor(_additive(_argsToArray(arguments), "add"));
@@ -158,4 +157,4 @@ var Color = (function () {
 			return _diff(_parseColor(color1), _parseColor(color2));
 		}
 	};
-})();
+})(typeof exports === 'undefined' ? this : exports);
