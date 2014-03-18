@@ -5,7 +5,7 @@ A simple javascript library for comparing color brightness and adjusting the bri
 
 The operations are based a representation of the color as a vector in a three-dimensional RGB space. The direction of the vector represents the color and the magnitude represents the brightness. When the brightness of two colors are compared, it is actually a comparison of the magnitudes of their color vectors. Adjustments to the magnitude of a color is done by converting the "Cartesian" RGB coordinates into spherical coordinates, changing the magnitude (or, now, radius) of the vector a given amount while holding theta and phi constant, and then converting the spherical coordinates back to Cartesian RGB coordinates.
 
-Since there is a maximum (0xff) and minimum (0x00) brightness for color in this system, all percentage changes are calculated as percentage of the absolute brightness. So, a 10% lightening from black (#000000) is the same amount of change as a 10% darkening from white (#ffffff) or a 10% darkening from blue (#0000ff). Anything exceeding those limits is disregarded and reset to the limit.
+Since there is a maximum (0xff) and minimum (0x00) brightness for color in this system, all percentage changes are calculated as percentage of the absolute brightness. So, a 10% lightening from black (#000000) is the same amount of change as a 10% darkening from white (#ffffff) or a 10% darkening from blue (#0000ff). Anything exceeding those limits is disregarded and reset to the limit. White is then added to the color to bring it up to desired brightness.
 
 
 Inputs
