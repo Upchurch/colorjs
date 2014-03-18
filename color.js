@@ -48,15 +48,13 @@ var Color = (function () {
 		}
 
 		// convert back to color coordinates
-		var r = Math.round(new_magnitude * Math.sin(theta) * Math.cos(phi));
-		var g = Math.round(new_magnitude * Math.sin(theta) * Math.sin(phi));
-		var b = Math.round(new_magnitude * Math.cos(theta));
+		var new_color = {
+			r: Math.round(new_magnitude * Math.sin(theta) * Math.cos(phi)),	
+			g: Math.round(new_magnitude * Math.sin(theta) * Math.sin(phi)),
+			b: Math.round(new_magnitude * Math.cos(theta)),
+		}
 
-		return  {
-			r: (isNaN(r))? 0 : r,
-			g: (isNaN(g))? 0 : g,
-			b: (isNaN(b))? 0 : b,
-		};
+		return  _validateColor(new_color, new_magnitude);
 	}
 
 	var _magnitude = function (color) {
@@ -68,7 +66,7 @@ var Color = (function () {
 	}
 
 	var _delta_magnitude = function (percent) {
-		return _magnitude(_parseColor('#ffffff')) * percent;
+		return brightest * percent;
 	}
 
 	var _parseColor = function (color) {
@@ -95,15 +93,51 @@ var Color = (function () {
 		return color_array;
 	}
 
+	var _validateColor = function (color, target_magnitude) {
+		// check for bad or too dark
+		for(var i in color) {
+			if(isNaN(color[i]) || color[i] < 0) {
+				color[i] = 0;
+			}
+		}
+
+		// check for too bright
+		if(_magnitude(color) >= brightest) {
+			return _parseColor('fff');
+		}
+
+		// check for human visible colors
+		var valid_components = [];
+		for(var i in color) {
+			if(color[i] <= 255) {
+				valid_components.push(i);
+			} else {
+				color[i] = 255;
+			}
+		}
+
+		// Not bright enough for the target_magnitude, add white
+		if(valid_components.length < 3) {
+			var delta_vector = {r:0,g:0,b:0};
+			target_magnitude = Math.round(target_magnitude);
+			for(var i in valid_components) {
+				delta_vector[valid_components[i]] = 1;
+			}
+			while(Math.round(_magnitude(color)) < target_magnitude) {
+				color = _additive([color, delta_vector], "add");
+				for(var i in color) {
+					if(color[i] > 255) {
+						color[i] = 255;
+					}
+				}
+			}
+		}
+		return color;
+	}
+
 	var _formatColor = function (color) {
 		var formatted = '#';
 		for(var i in color) {
-			// ceiling/floor checks
-			if (color[i] < 0) {
-				color[i] = 0; 
-			} else if( color[i] > 255) {
-				color[i] = 255;
-			}
 			var component = "0" + Math.round(color[i]).toString(16);
 			formatted += component.substr(component.length - 2);
 		}
@@ -128,6 +162,8 @@ var Color = (function () {
 		percent = parseFloat(num)/100;
 		return percent;
 	}
+
+	var brightest = _magnitude(_parseColor('fff'));
 
 	return {
 
