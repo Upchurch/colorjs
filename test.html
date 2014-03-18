@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ColorJS Spectrum Test</title>
+		<script src="color.js"></script>
+	</head>
+	<body>
+		<section>
+			<h1>Lighten Test</h1>
+			<canvas id="lighten" width="2600" height="250" style="border:solid 1px black"></canvas>
+		</section>
+		<section>
+			<h1>Darken Test<h1>
+			<canvas id="darken" width="2600" height="250" style="border:solid 1px black"></canvas>
+		</section>
+	</body>
+	<script>
+
+		// Color Bars:              
+        var line = 0;
+        var line_width = 10;
+        var line_height = 30;
+        var drawlines = function (this_color, direction) {
+            line +=line_height;
+            var next_color = "";
+            var position = 0;
+            var context = document.getElementById(direction);
+            var canvas = context.getContext('2d');
+            while (this_color != next_color) {
+                //console.log(this_color);
+                if(next_color !== "") {
+                    this_color = next_color;
+                }
+                next_color = Color[direction](this_color, "0.5%");
+                position += line_width
+                canvas.beginPath();
+                canvas.strokeStyle = this_color;
+                canvas.moveTo(position, line);
+                canvas.lineTo(position, line + line_height);
+                canvas.lineWidth = line_width;
+                canvas.stroke() ;
+            }
+        }
+
+        // Lighten Test
+        line = 0;
+        drawlines('#000000', 'lighten'); //black
+        drawlines('#000001', 'lighten'); //blue
+        drawlines('#000101', 'lighten'); //light blue
+        drawlines('#000100', 'lighten'); //green
+        drawlines('#010100', 'lighten'); //yellow
+        drawlines('#010000', 'lighten'); //red
+        drawlines('#010001', 'lighten'); //purple
+
+        // Darken Test
+        line = 0;
+        drawlines('#ffffff', 'darken'); //white
+        drawlines('#0000ff', 'darken'); //blue
+        drawlines('#00ffff', 'darken'); //light blue
+        drawlines('#00ff00', 'darken'); //green
+        drawlines('#ffff00', 'darken'); //yellow
+        drawlines('#ff0000', 'darken'); //red
+        drawlines('#ff00ff', 'darken'); //purple
+
+
+
+	</script>
+</html>
